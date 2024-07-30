@@ -1,18 +1,15 @@
 package com.server.ssipduck.domain.auth.property;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
-@Component
+@RequiredArgsConstructor
+@ConfigurationProperties(prefix = "oauth2.kakao")
 public class AuthProperties {
-    @Value("${oauth2.kakao.client-id}")
-    private String clientId;
+    private final String clientId;
+    private final String redirectUri;
+    private final String clientSecret;
 
-    @Value("${oauth2.kakao.redirect-uri}")
-    private String redirectUri;
-
-    @Value("${oauth2.kakao.client-secret}")
-    private String clientSecret;
 }
