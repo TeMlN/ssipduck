@@ -1,6 +1,5 @@
 package com.server.ssipduck.domain.auth.presentation;
 
-import com.server.ssipduck.domain.auth.dto.AuthTokenResponse;
 import com.server.ssipduck.domain.auth.service.KakaoOauth2RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
