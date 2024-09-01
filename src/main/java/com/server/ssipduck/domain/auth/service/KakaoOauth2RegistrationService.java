@@ -1,4 +1,4 @@
-package com.server.ssipduck.domain.auth.service.registration;
+package com.server.ssipduck.domain.auth.service;
 
 import com.server.ssipduck.domain.auth.dto.AuthTokenResponse;
 import com.server.ssipduck.domain.auth.dto.KakaoUserInfo;
