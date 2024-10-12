@@ -9,8 +9,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserIdDto {
     private Long id;
-
-    public void create(Long id) {
-        this.id = id;
-    }
 }
