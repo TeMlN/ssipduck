@@ -1,13 +1,18 @@
-package com.server.ssipduck.global.security;
+package com.server.ssipduck.global.security.configuration;
 
+import com.server.ssipduck.global.security.exception.CustomAccessDeniedHandler;
+import com.server.ssipduck.global.security.exception.CustomAuthenticationEntryPoint;
+import com.server.ssipduck.global.security.exception.filter.ExceptionHandlerFilter;
+import com.server.ssipduck.global.security.exception.filter.ExceptionHandlerFilterConfiguration;
+import com.server.ssipduck.global.security.filter.TokenFilter;
+import com.server.ssipduck.global.security.filter.TokenFilterConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -15,31 +20,32 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final TokenFilter tokenFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .cors().and()
-                .csrf().disable()
-                .httpBasic().disable()
+                .cors((corsConfig) -> corsConfig.disable())
+                .csrf((csrfConfig) -> csrfConfig.disable())
+                .httpBasic((httpBasic) -> httpBasic.disable())
 
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement((sessionManagement) ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeRequests((authorizeRequests) ->
+                        authorizeRequests.anyRequest()
+                                .permitAll()
+                )
 
-                .and()
-                .authorizeRequests()
-                .anyRequest().permitAll()
-
-                .and()
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                .apply(new TokenFilterConfiguration(tokenFilter)).and()
-                .apply(new ExceptionHandlerFilterConfig(exceptionHandlerFilter))
-                .and()
+                .exceptionHandling((exceptionConfig) ->
+                        exceptionConfig
+                                .accessDeniedHandler(accessDeniedHandler)
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                )
+                .with(new TokenFilterConfiguration(tokenFilter), Customizer.withDefaults())
+                .with(new ExceptionHandlerFilterConfiguration(exceptionHandlerFilter), Customizer.withDefaults())
                 .build();
+    }
 }
