@@ -1,6 +1,7 @@
 package com.server.ssipduck.domain.auth.presentation;
 
 import com.server.ssipduck.domain.auth.service.KakaoOauth2RegistrationService;
+import com.server.ssipduck.global.response.ResponseHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ public class KakaoOauth2Controller {
 
     @RequestMapping(method = RequestMethod.GET, value = "v1/oauth/kakao")
     private ResponseEntity<?> registerByKakao(@RequestParam String code) {
-        return ResponseEntity.ok(kakaoOauth2RegistrationService.registrationKakaoUser(code));
+        return ResponseHandler
+                .of(kakaoOauth2RegistrationService.registrationKakaoUser(code));
     }
 }
