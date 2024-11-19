@@ -39,7 +39,7 @@ public class KakaoOauth2RegistrationService {
          * 올드 유저라면 User의 정보를 갱신하고 해당 유저의 ID 반환
          * 신규 유저라면 User정보를 저장하고 해당 유저의 ID 반환
          */
-        return isNRU(userInfo.getId())
+        return userRepository.findByAuthId(userInfo.getId())
                 .map(existingUser -> {
                     existingUser.modifyProfileImage(userInfo.getProperties().getProfileImage());
                     return new UserIdDto(existingUser.getId());
@@ -85,15 +85,6 @@ public class KakaoOauth2RegistrationService {
         body.add("client_secret", authProperties.getClientSecret());
 
         return body;
-    }
-
-    /**
-     * 원래 가입돼 있는 유저가 있는지 확인하는 용도의 매서드
-     * @param authId
-     * @return
-     */
-    private Optional<User> isNRU(Long authId) {
-        return userRepository.findByAuthId(authId);
     }
 
     private User registrationNewUser(KakaoUserInfo userInfo) {
