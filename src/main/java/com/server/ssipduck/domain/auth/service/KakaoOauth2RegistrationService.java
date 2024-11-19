@@ -10,6 +10,7 @@ import com.server.ssipduck.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,6 +29,7 @@ public class KakaoOauth2RegistrationService {
     private static final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
 
+    @Transactional(rollbackFor = Exception.class)
     public UserIdDto registrationKakaoUser(String code) {
         AuthTokenResponse token = getToken(code);
         KakaoUserInfo userInfo = getUserInfo(token);
